@@ -14,6 +14,9 @@ EMOJI_FORWARD_COMMENT = "⏩"
 
 
 def run(task_id, comment_id):
+    if task_id not in [1329, "1329"]:
+        return
+
     bx24 = requests.Bitrix24()
     logger_.info({
         "pos": 0
@@ -60,8 +63,8 @@ def run(task_id, comment_id):
     # if task_id != id_task_montage:
     #     return
 
-    id_task_print = 1331
-    id_task_order = 1333
+    id_task_print = 1335
+    id_task_order = 1337
     logger_.info({
         "pos": 3
     })
