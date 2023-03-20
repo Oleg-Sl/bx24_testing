@@ -3,9 +3,11 @@ from rest_framework.response import Response
 from django.shortcuts import render
 from django.views.decorators.clickjacking import xframe_options_exempt
 import logging
+from threading import Thread
 
 
-from bitrix24 import tokens
+from bitrix24 import tokens, requests
+from services.tasks import forward_comment
 
 
 # логгер входные данные событий
@@ -51,4 +53,22 @@ class TaskCommentCreateApiView(views.APIView):
             "data": request.data,
             "query_params": request.query_params
         })
+        task_id = request.data.get("data[FIELDS_AFTER][TASK_ID]", None)
+        comment_id = request.data.get("data[FIELDS_AFTER][ID]", None)
+        application_token = request.data.get("auth[application_token]", None)
+
+        if not task_id:
+            return Response("Not transferred ID task", status=status.HTTP_400_BAD_REQUEST)
+
+        if not comment_id:
+            return Response("Not transferred ID comment", status=status.HTTP_400_BAD_REQUEST)
+
+        thr = Thread(target=forward_comment.run, args=(task_id, comment_id))
+        thr.start()
+
+        return Response("Обновление списка сотрудников началось", status=status.HTTP_200_OK)
+
+
+
+
 
