@@ -20,8 +20,8 @@ class Bitrix24:
         self.domain = token_data.get("domain", None)
         self.auth_token = token_data.get("auth_token", None)
         self.refresh_token = token_data.get("refresh_token", None)
-        self.client_id = token_data.get_secret("client_id")
-        self.client_secret = token_data.get_secret("client_secret")
+        self.client_id = token_data.get("client_id")
+        self.client_secret = token_data.get("client_secret")
 
     def refresh_tokens(self):
         """Refresh access tokens
