@@ -7,7 +7,7 @@ from threading import Thread
 
 
 from bitrix24 import tokens, requests
-from services.tasks import forward_comment
+from .services.tasks import forward_comment
 
 
 # логгер входные данные событий
