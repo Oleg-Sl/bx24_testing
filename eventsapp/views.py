@@ -48,7 +48,7 @@ class TaskCommentCreateApiView(views.APIView):
     def post(self, request):
         logger_access.info({
             "handler": "TaskCommentCreateApiView",
-            "query_params": request.data,
-            "query_params": request.q
+            "data": request.data,
+            "query_params": request.query_params
         })
 
