@@ -63,9 +63,9 @@ class TaskCommentCreateApiView(views.APIView):
         if not comment_id:
             return Response("Not transferred ID comment", status=status.HTTP_400_BAD_REQUEST)
 
-        forward_comment.run(task_id, comment_id)
-        # thr = Thread(target=forward_comment.run, args=(task_id, comment_id))
-        # thr.start()
+        # forward_comment.run(task_id, comment_id)
+        thr = Thread(target=forward_comment.run, args=(task_id, comment_id,))
+        thr.start()
 
         return Response("Обновление списка сотрудников началось", status=status.HTTP_200_OK)
 
