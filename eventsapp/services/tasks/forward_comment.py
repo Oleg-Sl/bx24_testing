@@ -1,4 +1,13 @@
+import logging
 from bitrix24 import tokens, requests
+
+
+logger_ = logging.getLogger('forward_comment')
+logger_.setLevel(logging.INFO)
+fh_ = logging.handlers.TimedRotatingFileHandler('./logs/forward_comment.log', when='D', interval=1, backupCount=10)
+formatter_ = logging.Formatter('[%(asctime)s] %(levelname).1s %(message)s')
+fh_.setFormatter(formatter_)
+logger_.addHandler(fh_)
 
 
 EMOJI_FORWARD_COMMENT = "⏩"
@@ -6,6 +15,9 @@ EMOJI_FORWARD_COMMENT = "⏩"
 
 def run(task_id, comment_id):
     bx24 = requests.Bitrix24()
+    logger_.info({
+        "pos": 0
+    })
     # Получение задачи и комментария
     response = bx24.call("batch", {
         "halt": 0,
@@ -14,13 +26,22 @@ def run(task_id, comment_id):
             "comment": f"task.commentitem.get?taskId={task_id}&itemId={comment_id}"
         }
     })
+    logger_.info({
+        "pos": 1,
+        "response": response
+    })
     if not response or "result" not in response or "result" not in response["result"]:
         return
+
     task = response.get("result", {}).get("result", {}).get("task", {})
     comment = response.get("result", {}).get("result", {}).get("comment", {})
 
     # Проверка, что комментарий нужно переслать
     comment_msg = comment.get("POST_MESSAGE").strip()
+    logger_.info({
+        "pos": 2,
+        "comment_msg": comment_msg
+    })
     if not comment_msg.startswith(EMOJI_FORWARD_COMMENT):
         return
 
@@ -41,7 +62,9 @@ def run(task_id, comment_id):
 
     id_task_print = 1331
     id_task_order = 1333
-
+    logger_.info({
+        "pos": 3
+    })
     # Добавление комментария в задачу поспечать и передача заказа
     response = bx24.call("batch", {
         "halt": 0,
@@ -49,6 +72,10 @@ def run(task_id, comment_id):
             "1": f"task.commentitem.add?taskId={id_task_print}&fields[POST_MESSAGE]={comment_msg}",
             "2": f"task.commentitem.add?taskId={id_task_order}&fields[POST_MESSAGE]={comment_msg}"
         }
+    })
+    logger_.info({
+        "pos": 4,
+        "response": response
     })
 
 
