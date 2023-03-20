@@ -5,7 +5,7 @@ from django.views.decorators.clickjacking import xframe_options_exempt
 import logging
 
 
-from .services import tokens
+from bitrix24 import tokens
 
 
 # логгер входные данные событий
