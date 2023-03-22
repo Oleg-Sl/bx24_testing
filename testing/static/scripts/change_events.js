@@ -148,7 +148,7 @@ export default class App {
     async init() {
         this.eventsList = await this.getEventsList();
         console.log("this.eventsList = ", this.eventsList);
-        await this.render(events);
+        await this.render();
 
         this.elemSelectTypeEvent = this.container.querySelector(".bx24_events__type_event select");
         this.elemSelectNameEvent = this.container.querySelector(".bx24_events__name_event select");
@@ -239,7 +239,7 @@ export default class App {
         }
     }
 
-    render(eventsList) {
+    render() {
         let events = this.bx.callMethod("event.get", {});
         console.log("events = ", events);
         let contentRegistredTableHTML = createTable(events.result);
