@@ -1,0 +1,24 @@
+.bx24_events__registry_event_container {
+  width: 750px;
+}
+
+.bx24_events__table_events_remove_row {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.bx24_events__table_events_remove_row i {
+  display: inline-block;
+  margin: 2px;
+  color: #797979;
+  font-size: 18px;
+  cursor: pointer;
+}
+.bx24_events__table_events_remove_row i::before {
+  font-weight: 700 !important;
+}
+.bx24_events__table_events_remove_row i:hover {
+  color: #000000;
+}/*# sourceMappingURL=events_list.css.map */

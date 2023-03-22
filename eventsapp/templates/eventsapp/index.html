@@ -4,8 +4,21 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <script src="//api.bitrix24.com/api/v1/"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            BX24.ready(function() {
+                console.log('Start');
+                let container = document.querySelector("#containerEventsManagement");
+                let app = new App(container);
+                app.init();
+            })
+        })
+    </script>
 </head>
-<body>
-    <h2>Hello!!!</h2>
-</body>
+    <body>
+        <h2>Hello!!!</h2>
+        <div id="containerEventsManagement"></div>
+        <script type="module" src="{% static 'scripts/change_events.js' %}"></script>
+    </body>
 </html>
