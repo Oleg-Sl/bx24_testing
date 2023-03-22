@@ -147,6 +147,7 @@ class App {
 
     async init() {
         this.eventsList = await getEventsList();
+        console.log("this.eventsList = ", this.eventsList);
         await this.render(events);
 
         this.elemSelectTypeEvent = this.container.querySelector(".bx24_events__type_event select");
@@ -239,7 +240,9 @@ class App {
     }
 
     render(eventsList) {
-        let contentRegistredTableHTML = createTable(eventsList);
+        let events = this.bx.callMethod("event.get", {});
+        console.log("events = ", events);
+        let contentRegistredTableHTML = createTable(events.result);
         let contentHTML = createAppHTML(contentRegistredTableHTML, this.eventsList);
         this.container.innerHTML = contentHTML;
     }
