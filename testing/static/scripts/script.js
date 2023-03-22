@@ -21,7 +21,7 @@ let events = [
     }
 ];
 
-class App {
+export default class App {
     constructor(container) {
         this.bx = new BX();                     // объект для выполнения запросов к Битрикс через JS библиотеку
         this.container = container;
