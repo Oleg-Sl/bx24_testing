@@ -138,7 +138,7 @@ function createAppHTML(contentRegistredTableHTML, eventsList) {
 }
 
 
-class App {
+export default class App {
     constructor(container) {
         this.bx = new Bitrix24();                     // объект для выполнения запросов к Битрикс через JS библиотеку
         this.container = container;
