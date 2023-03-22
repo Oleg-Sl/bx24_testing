@@ -239,8 +239,8 @@ export default class App {
         }
     }
 
-    render() {
-        let events = this.bx.callMethod("event.get", {});
+    async render() {
+        let events = await this.bx.callMethod("event.get", {});
         console.log("events = ", events);
         let contentRegistredTableHTML = createTable(events.result);
         let contentHTML = createAppHTML(contentRegistredTableHTML, this.eventsList);
