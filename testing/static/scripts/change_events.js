@@ -146,7 +146,7 @@ export default class App {
     }
 
     async init() {
-        this.eventsList = await getEventsList();
+        this.eventsList = await this.getEventsList();
         console.log("this.eventsList = ", this.eventsList);
         await this.render(events);
 
