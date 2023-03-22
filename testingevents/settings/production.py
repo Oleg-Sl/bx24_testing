@@ -94,17 +94,28 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC'
-USE_I18N = True
-USE_TZ = True
-
-STATIC_URL = 'static/'
+# LANGUAGE_CODE = 'en-us'
+# TIME_ZONE = 'UTC'
+# USE_I18N = True
+# USE_TZ = True
+#
+# STATIC_URL = 'static/'
 
 # STATICFILES_DIRS = [
 #     os.path.join(BASE_DIR, 'dpk', 'static'),
 # ]
 
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+LANGUAGE_CODE = 'ru-ru'
+
+# TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Novosibirsk'
+USE_I18N = True
+USE_TZ = True
+
+STATIC_URL = 'testing/static/'
+STATIC_ROOT = '/home/atonlab/projects/bx24_testing/testing/static'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
