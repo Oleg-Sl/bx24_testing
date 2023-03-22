@@ -147,7 +147,7 @@ export default class App {
 
     async init() {
         this.eventsList = await this.getEventsList();
-        console.log("this.eventsList = ", this.eventsList);
+        // console.log("this.eventsList = ", this.eventsList);
         await this.render();
 
         this.elemSelectTypeEvent = this.container.querySelector(".bx24_events__type_event select");
@@ -199,8 +199,8 @@ export default class App {
 
     async getEventsList() {
         let response = await this.bx.callMethod("events", {});
-        console.log("getEventsList = ", response);
-        return response.result;
+        // console.log("getEventsList = ", response);
+        return response;
     }
 
     // Регистрирование события
@@ -242,8 +242,8 @@ export default class App {
 
     async render() {
         let events = await this.bx.callMethod("event.get", {});
-        console.log("events = ", events);
-        let contentRegistredTableHTML = createTable(events.result);
+        // console.log("events = ", events);
+        let contentRegistredTableHTML = createTable(events);
         let contentHTML = createAppHTML(contentRegistredTableHTML, this.eventsList);
         this.container.innerHTML = contentHTML;
     }
