@@ -199,6 +199,7 @@ export default class App {
 
     async getEventsList() {
         let response = await this.bx.callMethod("events", {});
+        console.log("getEventsList = ", response);
         return response.result;
     }
 
