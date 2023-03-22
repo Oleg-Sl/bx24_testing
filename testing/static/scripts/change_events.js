@@ -218,8 +218,8 @@ export default class App {
         }
         console.log("Параметры создаваемого события: ", parameters);
         let resAddEvent = await this.bx.callMethod("event.bind", parameters);
-        console.log("Результат создания события: ", resDel);
-        if (resAddEvent && resAddEvent.result) {
+        console.log("Результат создания события: ", resAddEvent);
+        if (resAddEvent) {
             this.addRecordEventToTable(parameters.event, isOffline, parameters.handler, parameters.auth_connector);
         }
     }
