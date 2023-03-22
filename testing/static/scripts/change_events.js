@@ -157,7 +157,7 @@ class App {
         this.setOfflineEvent(this.elemSelectTypeEvent.value)
 
         this.initHandler();
-
+        BX24.fitWindow();
     }
 
     initHandler() {
