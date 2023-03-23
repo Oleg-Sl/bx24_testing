@@ -88,7 +88,7 @@ def run(task_id, comment_id):
         "fields": {
             "AUTHOR_ID": author_id,
             "POST_MESSAGE": comment_msg,
-            "UF_FORUM_MESSAGE_DOC": files_ids
+            # "UF_FORUM_MESSAGE_DOC": files_ids
         }
     })
     logger_.info({
