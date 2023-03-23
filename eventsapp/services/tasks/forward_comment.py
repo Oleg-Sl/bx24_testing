@@ -1,4 +1,6 @@
 import logging
+import re
+
 from bitrix24 import tokens, requests
 
 
@@ -41,11 +43,16 @@ def run(task_id, comment_id):
 
     # Проверка, что комментарий нужно переслать
     comment_msg = comment.get("POST_MESSAGE").strip()
+    author_id = comment.get("AUTHOR_ID")
+    files_ids = comment.get("ATTACHED_OBJECTS", {}).keys()
+
     logger_.info({
         "pos": 2,
+        "files_ids": files_ids,
         "comment_msg": comment_msg
     })
-    if not comment_msg.startswith(EMOJI_FORWARD_COMMENT):
+    # if not comment_msg.startswith(EMOJI_FORWARD_COMMENT):
+    if not is_forward_comment(comment_msg):
         return
 
     # # Получение ID связанной с задачей сделки
@@ -69,11 +76,19 @@ def run(task_id, comment_id):
         "pos": 3
     })
     # Добавление комментария в задачу поспечать и передача заказа
-    response = bx24.call("batch", {
-        "halt": 0,
-        "cmd": {
-            "1": f"task.commentitem.add?taskId={id_task_print}&fields[POST_MESSAGE]={comment_msg}",
-            "2": f"task.commentitem.add?taskId={id_task_order}&fields[POST_MESSAGE]={comment_msg}"
+    # response = bx24.call("batch", {
+    #     "halt": 0,
+    #     "cmd": {
+    #         "1": f"task.commentitem.add?taskId={id_task_print}&fields[POST_MESSAGE]={comment_msg}",
+    #         "2": f"task.commentitem.add?taskId={id_task_order}&fields[POST_MESSAGE]={comment_msg}"
+    #     }
+    # })
+    response = bx24.call("task.commentitem.add", {
+        "taskId": id_task_print,
+        "fields": {
+            "AUTHOR_ID": author_id,
+            "POST_MESSAGE": comment_msg,
+            "UF_FORUM_MESSAGE_DOC": files_ids
         }
     })
     logger_.info({
@@ -91,4 +106,19 @@ def get_id_from_binding(arr_binding, prefix):
         if len(arr_entity_data_) == 2 and arr_entity_data_[0] == prefix:
             return arr_entity_data_[1]
 
+
+def is_forward_comment(comment):
+    match = re.match(r"(\[.+\].+\[.+\])?(.+)", comment)
+    logger_.info({
+        "func1": "is_forward_comment",
+        "match": match.groups()
+    })
+    if not match or len(match.groups()) != 2:
+        return
+    logger_.info({
+        "func2": "is_forward_comment",
+        "match": match.group(2)
+    })
+    if match.group(2).strip().startswith(EMOJI_FORWARD_COMMENT):
+        return True
 

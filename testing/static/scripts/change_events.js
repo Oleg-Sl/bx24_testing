@@ -176,10 +176,7 @@ export default class App {
                 if (elemTr.dataset.type == "online") {
                     parameters.handler = elemTr.dataset.handler;
                 }
-        
-                console.log("Параметры удаления события: ", parameters);
                 let resDel = await this.bx.callMethod("event.unbind", parameters);
-                console.log("Результат удаления события: ", resDel);
                 if (resDel && resDel.count) {
                     elemTr.remove();
                 }
