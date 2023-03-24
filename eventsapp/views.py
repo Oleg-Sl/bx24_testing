@@ -7,7 +7,7 @@ from threading import Thread
 
 
 from bitrix24 import tokens, requests
-from .services.tasks import forward_comment
+from .services.tasks import forward_comment, change_deadline_for_overdue_tasks
 
 
 # логгер входные данные событий
@@ -70,6 +70,15 @@ class TaskCommentCreateApiView(views.APIView):
         return Response("Обновление списка сотрудников началось", status=status.HTTP_200_OK)
 
 
+class ChangeDeadlineForOverdueTasksApiView(views.APIView):
+    def post(self, request):
+        logger_access.info({
+            "handler": "ChangeDeadlineForOverdueTaskApiView",
+            "data": request.data,
+            "query_params": request.query_params
+        })
+        deadline = request.query_params("deadline", None) or None
+        thr = Thread(target=change_deadline_for_overdue_tasks.run, args=(deadline,))
+        thr.start()
 
-
-
+        return Response("Обновление крайнего срока задач началось", status=status.HTTP_200_OK)
