@@ -3,6 +3,7 @@ from rest_framework.response import Response
 from django.shortcuts import render
 from django.views.decorators.clickjacking import xframe_options_exempt
 import logging
+import datetime
 from threading import Thread
 
 
@@ -77,7 +78,8 @@ class ChangeDeadlineForOverdueTasksApiView(views.APIView):
             "data": request.data,
             "query_params": request.query_params
         })
-        deadline = request.query_params.get("deadline", None) or None
+        deadline = request.query_params.get("deadline", datetime.datetime.now()) or datetime.datetime.now()
+
         thr = Thread(target=change_deadline_for_overdue_tasks.run, args=(deadline,))
         thr.start()
 
