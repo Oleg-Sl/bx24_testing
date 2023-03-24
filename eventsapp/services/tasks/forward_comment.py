@@ -126,7 +126,7 @@ def is_forward_comment(comment):
 
 def get_files(bx24, files_objects):
     files_path = []
-    for _, f_data in files_objects:
+    for _, f_data in files_objects.items():
         f_path = bx24.download_file(f_data.get("DOWNLOAD_URL"))
         files_path.append(f_path)
     return files_path
