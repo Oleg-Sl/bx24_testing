@@ -44,7 +44,8 @@ def run(task_id, comment_id):
     # Проверка, что комментарий нужно переслать
     comment_msg = comment.get("POST_MESSAGE").strip()
     author_id = comment.get("AUTHOR_ID")
-    files_ids = comment.get("ATTACHED_OBJECTS", {}).keys()
+    # files_ids = comment.get("ATTACHED_OBJECTS", {}).keys()
+    files_ids = get_files(bx24, comment.get("ATTACHED_OBJECTS", {}))
 
     logger_.info({
         "pos": 2,
