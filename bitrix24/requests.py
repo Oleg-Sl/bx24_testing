@@ -1,9 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-"""Wrapper over Bitrix24 cloud API"""
 import json
 import time
-from requests import adapters, post, exceptions
+import os
+import re
+import base64
+from urllib.parse import unquote
+from requests import adapters, post, exceptions, get as http_get
+from mimetypes import guess_extension as extension
+from django.conf import settings
 
 from . import tokens
 
@@ -36,7 +41,6 @@ class Bitrix24:
                         'refresh_token': self.refresh_token})
             result = json.loads(r.text)
 
-            # Renew access tokens
             self.auth_token = result['access_token']
             self.refresh_token = result['refresh_token']
             self.expires_in = result['expires_in']
@@ -80,19 +84,56 @@ class Bitrix24:
 
         return self.call("batch", params)
 
-    # def request_list(self, method, fields=None, filter={}, id_start=0):
-    #     filter[">ID"] = id_start
-    #     params = {
-    #         "order": {"ID": "ASC"},
-    #         "filter": filter,
-    #         "select": fields,
-    #         "start": -1
-    #     }
-    #     data = self.request(method, params).get("result")
-    #     if data and isinstance(data, dict) and "tasks" in data:
-    #         data = data.get("tasks")
-    #     if data and isinstance(data, list):
-    #         id_start = data[-1].get("ID") or data[-1].get("id")
-    #         data.extend(self.request_list(method, fields, filter, id_start))
-    #
-    #     return data
+    def download_file(self, url_path, recursion=5):
+        self.refresh_tokens()
+        recursion -= 1
+        try:
+            url = f'https://{self.domain}{url_path}'
+            params = {
+                'auth': self.auth_token
+            }
+
+            result = http_get(url, params)
+        except exceptions.ReadTimeout:
+            result = dict(error=f'Timeout waiting expired [{str(self.timeout)} sec]')
+        except exceptions.ConnectionError:
+            result = dict(error=f'Max retries exceeded [{str(adapters.DEFAULT_RETRIES)}]')
+
+        if 'error' in result or 'X-Bitrix-Ajax-Status' in result.headers:
+            result_update_token = self.refresh_tokens()
+            if result_update_token is not True:
+                return
+            if recursion > 0:
+                return self.download_file(url_path, recursion)
+        else:
+            f_name = self.get_filename(result.headers)
+            f_path = os.path.join(settings.BASE_DIR, 'files', f_name)
+            try:
+                if f_name:
+                    with open(f_path, 'wb') as f:
+                        f.write(result.content)
+                    return f_path
+            except Exception as err:
+                print(err)
+
+    @staticmethod
+    def get_filename(headers, fileid=""):
+        data = headers.get('Content-Disposition')
+        if data:
+            filename = re.search(r'filename="(.+)";', data).group(1)
+            return unquote(filename)
+        else:
+            content_type = headers.get("Content-Type")
+
+            if content_type and extension(content_type):
+                filename = fileid + extension(content_type)
+                return unquote(filename)
+            else:
+                return unquote(fileid)
+
+    @staticmethod
+    def file_to_base64(f_path):
+        encoded_string = ""
+        with open(f_path, "rb") as f:
+            encoded_string = base64.b64encode(f.read())
+        return encoded_string.decode("ascii")

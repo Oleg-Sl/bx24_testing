@@ -122,3 +122,10 @@ def is_forward_comment(comment):
     if match.group(2).strip().startswith(EMOJI_FORWARD_COMMENT):
         return True
 
+
+def get_files(bx24, files_objects):
+    files_path = []
+    for _, f_data in files_objects:
+        f_path = bx24.download_file(f_data.get("DOWNLOAD_URL"))
+        files_path.append(f_path)
+    return files_path
