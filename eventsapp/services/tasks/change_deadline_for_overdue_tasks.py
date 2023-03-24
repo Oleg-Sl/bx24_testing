@@ -13,9 +13,9 @@ fh_change_deadline.setFormatter(formatter_change_deadline)
 logger_change_deadline.addHandler(fh_change_deadline)
 
 
-def run(deadline=datetime.datetime.now()):
+def run(deadline):
     bx24 = requests.Bitrix24()
-    deadline_str = deadline.strftime("%Y-%m-%d")
+    # deadline_str = deadline.strftime("%Y-%m-%d")
     # start = 0
     while True:
         response = bx24.call(
@@ -43,7 +43,7 @@ def run(deadline=datetime.datetime.now()):
         cmd = {}
         for task_ in response.get("result", {}).get("tasks", [])[:25]:
             task_id = task_["id"]
-            cmd[task_id] = f"tasks.task.update?taskId={task_id}&fields[DEADLINE]={deadline_str}"
+            cmd[task_id] = f"tasks.task.update?taskId={task_id}&fields[DEADLINE]={deadline}&fields[status]=2"
 
         if cmd:
             res_1 = bx24.call("batch", {"halt": 0, "cmd": cmd})
@@ -56,7 +56,7 @@ def run(deadline=datetime.datetime.now()):
         cmd = {}
         for task_ in response.get("result", {}).get("tasks", [])[25:]:
             task_id = task_["id"]
-            cmd[task_id] = f"tasks.task.update?taskId={task_id}&fields[DEADLINE]={deadline_str}"
+            cmd[task_id] = f"tasks.task.update?taskId={task_id}&fields[DEADLINE]={deadline}&fields[status]=2"
 
         if cmd:
             res_2 = bx24.call("batch", {"halt": 0, "cmd": cmd})
