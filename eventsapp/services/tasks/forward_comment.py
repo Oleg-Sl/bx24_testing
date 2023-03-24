@@ -45,7 +45,7 @@ def run(task_id, comment_id):
     comment_msg = comment.get("POST_MESSAGE").strip()
     author_id = comment.get("AUTHOR_ID")
     # files_ids = comment.get("ATTACHED_OBJECTS", {}).keys()
-    files_ids = get_files(bx24, comment.get("ATTACHED_OBJECTS", {}))
+    files_ids = get_files_data(comment.get("ATTACHED_OBJECTS", {}))
 
     logger_.info({
         "pos": 2,
@@ -89,7 +89,7 @@ def run(task_id, comment_id):
         "fields": {
             "AUTHOR_ID": author_id,
             "POST_MESSAGE": comment_msg,
-            # "UF_FORUM_MESSAGE_DOC": files_ids
+            "UF_FORUM_MESSAGE_DOC": files_ids
         }
     })
     logger_.info({
@@ -124,9 +124,9 @@ def is_forward_comment(comment):
         return True
 
 
-def get_files(bx24, files_objects):
-    files_path = []
-    for _, f_data in files_objects.items():
-        f_path = bx24.download_file(f_data.get("DOWNLOAD_URL"))
-        files_path.append(f_path)
-    return files_path
+def get_files_data(files_):
+    files_ids = []
+    for _, f_data in files_.items():
+        f_id = f_data.get("FILE_ID")
+        files_ids.append(f"n{f_id}")
+    return files_ids
