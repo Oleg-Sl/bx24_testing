@@ -80,7 +80,7 @@ class ChangeDeadlineForOverdueTasksApiView(views.APIView):
         })
         # deadline = request.query_params.get("deadline", datetime.datetime.now().strftime("%Y-%m-%d")) or datetime.datetime.now().strftime("%Y-%m-%d")
         deadline_str = request.query_params.get("deadline")
-        deadline = datetime.strptime(deadline_str, "%d.%m.%Y") if deadline_str else datetime.datetime.now().strftime("%d.%m.%Y")
+        deadline = datetime.datetime.strptime(deadline_str, "%d.%m.%Y") if deadline_str else datetime.datetime.now().strftime("%d.%m.%Y")
         thr = Thread(target=change_deadline_for_overdue_tasks.run, args=(deadline,))
         thr.start()
 
