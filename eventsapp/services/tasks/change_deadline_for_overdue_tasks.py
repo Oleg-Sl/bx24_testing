@@ -17,7 +17,7 @@ BATCH_SIZE = 25
 
 
 def run(deadline):
-    logger_change_deadline.info(deadline)
+    # logger_change_deadline.info(deadline)
     bx24 = requests.Bitrix24()
     deadline_str = deadline.strftime("%Y-%m-%d")
     tasks = bx24.request_list("tasks.task.list", ["ID"], {"STATUS": -1})
@@ -35,7 +35,7 @@ def run(deadline):
                 "deadline": deadline_str
             })
 
-        # response = bx24.call("batch", {"halt": 0, "cmd": cmd})
+        response = bx24.call("batch", {"halt": 0, "cmd": cmd})
 
 
 
