@@ -4,29 +4,26 @@ from django.utils import timezone
 
 from bitrix24 import tokens, requests
 
+
+BATCH_SIZE = 25
+
+
 class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
-        files_objects = {
-                "441": {
-                    "ATTACHMENT_ID": "441",
-                    "NAME": "example.jpeg",
-                    "SIZE": "6333",
-                    "FILE_ID": "3119",
-                    "DOWNLOAD_URL": "/bitrix/tools/disk/uf.php?attachedId=441&auth%5Baplogin%5D=9&auth%5Bap%5D=vhduvllk2mxru5lx&action=download&ncc=1",
-                    "VIEW_URL": "/bitrix/tools/disk/uf.php?attachedId=441&auth%5Baplogin%5D=9&auth%5Bap%5D=vhduvllk2mxru5lx&action=show&ncc=1"
-                },
-                "443": {
-                    "ATTACHMENT_ID": "443",
-                    "NAME": "example.png",
-                    "SIZE": "34983",
-                    "FILE_ID": "3121",
-                    "DOWNLOAD_URL": "/bitrix/tools/disk/uf.php?attachedId=443&auth%5Baplogin%5D=9&auth%5Bap%5D=vhduvllk2mxru5lx&action=download&ncc=1",
-                    "VIEW_URL": "/bitrix/tools/disk/uf.php?attachedId=443&auth%5Baplogin%5D=9&auth%5Bap%5D=vhduvllk2mxru5lx&action=show&ncc=1"
-                }
-            }
-
         bx24 = requests.Bitrix24()
+        deadline = "2022-03-09"
+        # tasks = bx24.request_list("tasks.task.list", ["ID"], {"STATUS": -1})
+        tasks = bx24.request_list("tasks.task.list", ["ID"])
+        length = len(tasks)
+        for i in range(0, length, BATCH_SIZE):
+            cmd = {}
+            for j in range(i, i + BATCH_SIZE):
+                if j >= length:
+                    break
+                task_id = tasks[j].get("id")
+                cmd[task_id] = f"tasks.task.update?taskId={task_id}&fields[DEADLINE]={deadline}&fields[status]=2"
 
-        for _, f_data in files_objects.items():
-            f_path = bx24.download_file(f_data.get("DOWNLOAD_URL"))
+            pprint.pprint(cmd)
+
+
